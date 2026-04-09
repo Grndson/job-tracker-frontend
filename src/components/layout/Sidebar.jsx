@@ -39,9 +39,12 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
   const navigate = useNavigate()
   const location = useLocation()
 
+  // Close sidebar on route change (mobile only behavior is controlled safely)
   useEffect(() => {
-    onMobileClose?.()
-  }, [location.pathname, onMobileClose])
+    if (mobileOpen) {
+      onMobileClose?.()
+    }
+  }, [location.pathname, mobileOpen, onMobileClose])
 
   const handleLogout = async () => {
     try {
@@ -68,9 +71,14 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
       <aside
         className={`
           fixed left-0 top-0 h-full bg-surface1 border-r border-slate-800
-          flex flex-col z-40 transition-all duration-300 ease-in-out
+          flex flex-col z-40 transition-transform duration-300 ease-in-out
           ${collapsed ? 'w-16' : 'w-60'}
-          ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+
+          /* MOBILE BEHAVIOR */
+          ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
+
+          /* DESKTOP ALWAYS VISIBLE */
+          lg:translate-x-0
         `}
       >
         {/* Logo */}
@@ -105,6 +113,7 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
                 <span className="flex-shrink-0">{item.icon}</span>
                 {!collapsed && <span>{item.label}</span>}
               </NavLink>
+
               {collapsed && (
                 <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-surface3 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-slate-700 z-50">
                   {item.label}
@@ -119,35 +128,33 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
           {!collapsed && (
             <div className="px-3 py-2">
               <p className="text-xs text-slate-500">Signed in as</p>
-              <p className="text-sm text-slate-300 font-medium truncate">{user?.name}</p>
+              <p className="text-sm text-slate-300 font-medium truncate">
+                {user?.name}
+              </p>
             </div>
           )}
 
-          <div className="relative group">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 text-sm"
-            >
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              {!collapsed && <span>Logout</span>}
-            </button>
-            {collapsed && (
-              <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-surface3 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-slate-700 z-50">
-                Logout
-              </div>
-            )}
-          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 text-sm"
+          >
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            {!collapsed && <span>Logout</span>}
+          </button>
 
-          {/* Collapse toggle — desktop only */}
+          {/* Collapse toggle */}
           <button
             onClick={() => onCollapse(!collapsed)}
             className="hidden lg:flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all duration-200 text-sm"
           >
             <svg
-              className={`w-5 h-5 flex-shrink-0 transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`}
-              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}
+              className={`w-5 h-5 transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.8}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
             </svg>
