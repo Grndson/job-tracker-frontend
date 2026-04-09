@@ -1,14 +1,14 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  withCredentials: true,
 })
 
+// Attach token automatically
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {
@@ -17,6 +17,7 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// Handle auth errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
