@@ -69,18 +69,13 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
       )}
 
       <aside
-        className={`
-          fixed left-0 top-0 h-full bg-surface1 border-r border-slate-800
-          flex flex-col z-40 transition-transform duration-300 ease-in-out
-          ${collapsed ? 'w-16' : 'w-60'}
-
-          /* MOBILE BEHAVIOR */
-          ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
-
-          /* DESKTOP ALWAYS VISIBLE */
-          lg:translate-x-0
-        `}
-      >
+  className={`
+    fixed left-0 top-0 h-full bg-surface1 border-r border-slate-800
+    flex flex-col z-40 transition-all duration-300 ease-in-out
+    ${collapsed ? 'w-16' : 'w-60'}
+    ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+  `}
+>
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-5 border-b border-slate-800">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
