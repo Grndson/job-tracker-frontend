@@ -74,6 +74,7 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
         className={`
         fixed left-0 top-0 h-full bg-surface1 border-r border-slate-800
         flex flex-col z-40 transition-transform duration-300 ease-in-out
+        w-64
         ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
         ${collapsed ? 'lg:w-16' : 'lg:w-60'}
