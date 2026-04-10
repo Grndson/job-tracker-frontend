@@ -46,7 +46,9 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
     if (mobileOpen) {
       onMobileClose?.()
     }
-  }, [location.pathname,])
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [location.pathname,])
 
   const handleLogout = async () => {
     try {
