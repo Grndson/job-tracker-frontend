@@ -46,7 +46,7 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
     if (mobileOpen) {
       onMobileClose?.()
     }
-  }, [location.pathname, mobileOpen, onMobileClose])
+  }, [location.pathname,])
 
   const handleLogout = async () => {
     try {
