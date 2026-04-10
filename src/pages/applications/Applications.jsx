@@ -2,7 +2,7 @@ import toast from 'react-hot-toast'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getApplications, deleteApplication, getApplication } from '../../api/applications'
+import { getApplications, deleteApplication, getApplication, exportApplications } from '../../api/applications'
 import { StatusBadge, PriorityBadge } from '../../components/ui/Badge'
 import { SkeletonRow } from '../../components/ui/Skeleton'
 import Button from '../../components/ui/Button'
@@ -127,14 +127,14 @@ export default function Applications() {
   useEffect(() => {
     const editId = searchParams.get('edit')
     if (editId) {
-        getApplication(editId)
+      getApplication(editId)
         .then(res => {
-            setEditApplication(res.data.data)
+          setEditApplication(res.data.data)
         })
         .catch(() => {})
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // empty deps — only runs once on mount
+  }, [])
 
   const { data, isLoading } = useQuery({
     queryKey: ['applications', { search, status, priority, sort, page }],
@@ -185,6 +185,23 @@ export default function Applications() {
   const openEdit = (app) => { setEditApplication(app); setDrawerOpen(true) }
   const closeDrawer = () => { setDrawerOpen(false); setEditApplication(null) }
 
+  const handleExport = async () => {
+    try {
+      const res = await exportApplications()
+      const url = window.URL.createObjectURL(new Blob([res.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'applications.csv')
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      toast.success('Applications exported!')
+    } catch {
+      toast.error('Failed to export applications')
+    }
+  }
+
   return (
     <div className="space-y-4 md:space-y-6">
 
@@ -196,13 +213,21 @@ export default function Applications() {
             {meta.total ?? 0} total application{meta.total !== 1 ? 's' : ''}
           </p>
         </div>
-        <Button onClick={() => setDrawerOpen(true)} size="sm" className="md:size-md flex-shrink-0">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          <span className="hidden sm:inline">Add Application</span>
-          <span className="sm:hidden">Add</span>
-        </Button>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Button variant="secondary" size="sm" onClick={handleExport}>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span className="hidden sm:inline">Export CSV</span>
+          </Button>
+          <Button onClick={() => setDrawerOpen(true)} size="sm" className="flex-shrink-0">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="hidden sm:inline">Add Application</span>
+            <span className="sm:hidden">Add</span>
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}

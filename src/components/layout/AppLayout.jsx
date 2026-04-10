@@ -1,12 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import useAuthStore from '../../store/authStore'
 import Sidebar from './Sidebar'
+import useThemeStore from '../../store/themeStore'
 
 export default function AppLayout() {
   const { token } = useAuthStore()
+  const { theme } = useThemeStore()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
 
   if (!token) return <Navigate to="/login" replace />
 

@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import useAuthStore from '../../store/authStore'
 import { logout } from '../../api/auth'
+import useThemeStore from '../../store/themeStore'
 
 const navItems = [
   {
@@ -36,6 +37,7 @@ const navItems = [
 
 export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollapse }) {
   const { user, clearAuth } = useAuthStore()
+  const { theme, toggleTheme } = useThemeStore()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -44,7 +46,7 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
     if (mobileOpen) {
       onMobileClose?.()
     }
-  }, [location.pathname])
+  }, [location.pathname, mobileOpen, onMobileClose])
 
   const handleLogout = async () => {
     try {
@@ -139,6 +141,28 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
             </svg>
             {!collapsed && <span>Logout</span>}
           </button>
+
+          {/* Theme toggle */}
+        <button
+        onClick={toggleTheme}
+        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all duration-200 text-sm"
+        >
+        {theme === 'dark' ? (
+            <>
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 000 14A7 7 0 0012 5z" />
+            </svg>
+            {!collapsed && <span>Light Mode</span>}
+            </>
+        ) : (
+            <>
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            {!collapsed && <span>Dark Mode</span>}
+            </>
+        )}
+        </button>
 
           {/* Collapse toggle */}
           <button
