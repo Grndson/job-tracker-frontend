@@ -41,7 +41,7 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Close sidebar on route change (mobile only behavior is controlled safely)
+  // close sidebar on route change (mobile)
   useEffect(() => {
     if (mobileOpen) {
       onMobileClose?.()
@@ -51,10 +51,10 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
   const handleLogout = async () => {
     try {
       await logout()
-    // eslint-disable-next-line no-unused-vars
-    } catch (e) {
-      // ignore logout errors
+    } catch (error) {
+      console.error('Logout API failed:', error)
     }
+
     clearAuth()
     toast.success('Logged out successfully')
     navigate('/login')
@@ -86,6 +86,7 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
+
           {!collapsed && (
             <span className="font-sora font-bold text-white text-sm tracking-wide">
               JobTracker
@@ -93,7 +94,7 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
           )}
         </div>
 
-        {/* Nav */}
+        {/* Navigation */}
         <nav className="flex-1 px-2 py-4 space-y-1">
           {navItems.map((item) => (
             <div key={item.path} className="relative group">
@@ -121,8 +122,8 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
           ))}
         </nav>
 
-        {/* User + Logout */}
-        <div className="border-t border-slate-800 p-3 space-y-1">
+        {/* Bottom actions */}
+        <div className="border-t border-slate-800 p-3 space-y-2">
           {!collapsed && (
             <div className="px-3 py-2">
               <p className="text-xs text-slate-500">Signed in as</p>
@@ -132,6 +133,7 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
             </div>
           )}
 
+          {/* Logout */}
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 text-sm"
@@ -143,26 +145,26 @@ export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onCollap
           </button>
 
           {/* Theme toggle */}
-        <button
-        onClick={toggleTheme}
-        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all duration-200 text-sm"
-        >
-        {theme === 'dark' ? (
-            <>
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 000 14A7 7 0 0012 5z" />
-            </svg>
-            {!collapsed && <span>Light Mode</span>}
-            </>
-        ) : (
-            <>
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-            {!collapsed && <span>Dark Mode</span>}
-            </>
-        )}
-        </button>
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200 text-sm"
+          >
+            {theme === 'dark' ? (
+              <>
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 000 14A7 7 0 0012 5z" />
+                </svg>
+                {!collapsed && <span>Light Mode</span>}
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+                {!collapsed && <span>Dark Mode</span>}
+              </>
+            )}
+          </button>
 
           {/* Collapse toggle */}
           <button
